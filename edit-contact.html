@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Contact</title>
+</head>
+<body>
+    <form id="editForm">
+        <input type="text" id="firstName" required><br>
+        <input type="text" id="lastName" required><br>
+        <input type="file" id="avatar"><br>
+        <button type="submit">Update Contact</button>
+    </form>
+
+    <script src="config.js"></script>
+    <script>
+        let id = new URLSearchParams(window.location.search).get("id");
+
+        fetch(rootPath + `controller/get-contact/?apiKey=${apiKey}&id=${id}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("firstName").value = data.firstName;
+                document.getElementById("lastName").value = data.lastName;
+            });
+
+        document.getElementById("editForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let formData = new FormData();
+            formData.append("apiKey", apiKey);
+            formData.append("id", id);
+            formData.append("firstName", document.getElementById("firstName").value);
+            formData.append("lastName", document.getElementById("lastName").value);
+            formData.append("avatar", document.getElementById("avatar").files[0]);
+
+            fetch(rootPath + "controller/update-contact/", {
+                method: "POST",
+                body: formData
+            }).then(() => window.open("index.html", "_self"));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Add Contact</title>
+</head>
+<body>
+    <form id="addForm">
+        <input type="text" id="firstName" placeholder="First Name" required><br>
+        <input type="text" id="lastName" placeholder="Last Name" required><br>
+        <input type="file" id="avatar"><br>
+        <button type="submit">Add Contact</button>
+    </form>
+    <script src="config.js"></script>
+    <script>
+        document.getElementById("addForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            let formData = new FormData();
+            formData.append("apiKey", apiKey);
+            formData.append("firstName", document.getElementById("firstName").value);
+            formData.append("lastName", document.getElementById("lastName").value);
+            formData.append("avatar", document.getElementById("avatar").files[0]);
+
+            fetch(rootPath + "controller/add-contact/", {
+                method: "POST",
+                body: formData
+            }).then(() => window.open("index.html", "_self"));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Book App</title>
+    </head>
+    <body onload="fetchContacts()">
+    <div id="table">Contacts loading...</div>
+    <button id="refresh" type="button">Refresh</button>
+    <button id="addContact" type="button" onclick="location.href='add-contact.html'">Add Contact</button>
+
+        <script src="config.js"></script>
+        <script>
+        document.getElementById("refresh").addEventListener("click", fetchContacts);
+
+        function fetchContacts() {
+            fetch(rootPath + "controller/get-contacts/?apiKey=" + apiKey)
+                .then(response => response.json())
+                .then(data => displayOutput(data));
+        }
+
+        function displayOutput(data) {
+            let output = "<table border='1'>";
+            for (let a in data) {
+                output += `
+                    <tr>
+                        <td><img src="${rootPath}controller/uploads/${data[a].avatar}" width="50"/></td>
+                        <td>${data[a].firstName} ${data[a].lastName}</td>
+                        <td><a href='edit-contact.html?id=${data[a].id}'>Edit</a></td>
+                        <td><button onclick="deleteContact(${data[a].id})">Delete</button></td>
+                    </tr>`;
+            }
+            output += "</table>";
+            document.getElementById("table").innerHTML = output;
+        }
+
+        function deleteContact(id) {
+            fetch(`${rootPath}controller/delete-contact/?apiKey=${apiKey}&id=${id}`)
+                .then(() => fetchContacts());
+        }
+    </script>
+</body>
+</html>
